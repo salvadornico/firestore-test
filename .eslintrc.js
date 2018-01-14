@@ -18,6 +18,7 @@ module.exports = {
 		indent: ["error", "tab"],
 		quotes: ["error", "double"],
 		"linebreak-style": ["warn", "unix"],
-		"no-undef": "off"
+		"no-undef": "off",
+		semi: "off"
 	}
 };

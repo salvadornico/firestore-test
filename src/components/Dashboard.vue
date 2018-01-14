@@ -14,33 +14,13 @@
 </template>
 
 <script>
-import db from "./firebaseInit";
-
 export default {
 	name: "dashboard",
-	data() {
-		return {
-			employees: []
-		};
-	},
-	created() {
-		db
-			.collection("employees")
-			.orderBy("department")
-			.get()
-			.then(querySnapshot => {
-				querySnapshot.forEach(doc => {
-					const data = {
-						id: doc.id,
-						employee_id: doc.data().employee_id,
-						name: doc.data().name,
-						department: doc.data().department,
-						position: doc.data().position
-					};
-					this.employees.push(data);
-				});
-			});
+	computed: {
+		employees() {
+			return this.$store.getters.employees
+		}
 	}
-};
+}
 </script>
 
