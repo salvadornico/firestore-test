@@ -37,6 +37,17 @@ export default new Vuex.Store({
 					state.employees = result
 				})
 		},
+		addEmployee: (state, payload) => {
+			db
+				.collection("employees")
+				.add({
+					employee_id: payload.employee_id,
+					name: payload.name,
+					department: payload.department,
+					position: payload.position
+				})
+				.then(state.employees.push(payload))
+		},
 		deleteEmployee: (state, payload) => {
 			if (confirm("Are you sure?")) {
 				db
@@ -59,6 +70,9 @@ export default new Vuex.Store({
 	actions: {
 		loadEmployees: async context => {
 			await context.commit("loadEmployees")
+		},
+		addEmployee: async (context, payload) => {
+			await context.commit("addEmployee", payload)
 		},
 		deleteEmployee: async (context, payload) => {
 			await context.commit("deleteEmployee", payload)
