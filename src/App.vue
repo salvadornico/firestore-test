@@ -15,6 +15,7 @@ export default {
 	},
 	created() {
 		this.$store.dispatch("loadEmployees")
+		this.$store.dispatch("checkForSignIn")
 	}
 }
 </script>

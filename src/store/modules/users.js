@@ -6,91 +6,60 @@ export default {
 		isLoggedIn: false
 	},
 	getters: {
-		// employees: state => state.employees,
-		// employee: state => employee_id =>
-		// 	state.employees.find(
-		// 		employee => employee.employee_id === employee_id
-		// 	)
+		currentUser: state => state.currentUser,
+		isLoggedIn: state => state.isLoggedIn
 	},
 	mutations: {
-		// loadEmployees: state => {
-		// 	db
-		// 		.collection("employees")
-		// 		.orderBy("department")
-		// 		.get()
-		// 		.then(querySnapshot => {
-		// 			const result = []
-		// 			querySnapshot.forEach(doc => {
-		// 				const data = {
-		// 					id: doc.id,
-		// 					employee_id: doc.data().employee_id,
-		// 					name: doc.data().name,
-		// 					department: doc.data().department,
-		// 					position: doc.data().position
-		// 				}
-		// 				result.push(data)
-		// 			})
-		// 			state.employees = result
-		// 		})
-		// },
-		// addEmployee: (state, payload) => {
-		// 	db
-		// 		.collection("employees")
-		// 		.add({
-		// 			employee_id: payload.employee_id,
-		// 			name: payload.name,
-		// 			department: payload.department,
-		// 			position: payload.position
-		// 		})
-		// 		.then(state.employees.push(payload))
-		// },
-		// editEmployee: (state, payload) => {
-		// 	db
-		// 		.collection("employees")
-		// 		.where("employee_id", "==", payload.employee_id)
-		// 		.get()
-		// 		.then(querySnapshot => {
-		// 			querySnapshot.forEach(doc => {
-		// 				doc.ref.update({
-		// 					employee_id: payload.employee_id,
-		// 					name: payload.name,
-		// 					department: payload.department,
-		// 					position: payload.position
-		// 				})
-		// 			})
-		// 		})
-		// },
-		// deleteEmployee: (state, payload) => {
-		// 	if (confirm("Are you sure?")) {
-		// 		db
-		// 			.collection("employees")
-		// 			.where("employee_id", "==", payload)
-		// 			.get()
-		// 			.then(querySnapshot => {
-		// 				querySnapshot.forEach(doc => {
-		// 					doc.ref.delete()
-		// 				})
-		// 			})
-		// 			.then(docRef => {
-		// 				state.employees = state.employees.filter(
-		// 					e => e.employee_id !== payload
-		// 				)
-		// 			})
-		// 	}
-		// }
+		createAccount: (state, payload) => {
+			auth
+				.createUserWithEmailAndPassword(payload.email, payload.password)
+				.catch(error => {
+					Materialize.toast(`${error.code}: ${error.message}`, 2000)
+				})
+		},
+		checkForSignIn: state => {
+			auth.onAuthStateChanged(user => {
+				if (user) {
+					state.currentUser = user
+					state.isLoggedIn = true
+					Materialize.toast(`Hi ${user.email}!`, 2000)
+				} else {
+					state.isLoggedIn = false
+				}
+			})
+		},
+		login: (state, payload) => {
+			auth
+				.signInWithEmailAndPassword(payload.email, payload.password)
+				.catch(function(error) {
+					Materialize.toast(`${error.code}: ${error.message}`, 2000)
+				})
+		},
+		logout: state => {
+			auth
+				.signOut()
+				.then(() => {
+					state.currentUser = {}
+					state.isLoggedIn = false
+					Materialize.toast("Sign out successful", 2000)
+				})
+				.catch(function(error) {
+					Materialize.toast(`${error.code}: ${error.message}`, 2000)
+				})
+		}
 	},
 	actions: {
-		// loadEmployees: async context => {
-		// 	await context.commit("loadEmployees")
-		// },
-		// addEmployee: async (context, payload) => {
-		// 	await context.commit("addEmployee", payload)
-		// },
-		// editEmployee: async (context, payload) => {
-		// 	await context.commit("editEmployee", payload)
-		// },
-		// deleteEmployee: async (context, payload) => {
-		// 	await context.commit("deleteEmployee", payload)
-		// }
+		checkForSignIn: async context => {
+			await context.commit("checkForSignIn")
+		},
+		createAccount: async (context, payload) => {
+			await context.commit("createAccount", payload)
+		},
+		login: async (context, payload) => {
+			await context.commit("login", payload)
+		},
+		logout: async context => {
+			await context.commit("logout")
+		}
 	}
 }

@@ -1,4 +1,6 @@
-import { db } from "../../firebase"
+import { firestore } from "../../firebase"
+
+const db = firestore.collection("employees")
 
 export default {
 	state: {
@@ -14,7 +16,6 @@ export default {
 	mutations: {
 		loadEmployees: state => {
 			db
-				.collection("employees")
 				.orderBy("department")
 				.get()
 				.then(querySnapshot => {
@@ -34,7 +35,6 @@ export default {
 		},
 		addEmployee: (state, payload) => {
 			db
-				.collection("employees")
 				.add({
 					employee_id: payload.employee_id,
 					name: payload.name,
@@ -45,7 +45,6 @@ export default {
 		},
 		editEmployee: (state, payload) => {
 			db
-				.collection("employees")
 				.where("employee_id", "==", payload.employee_id)
 				.get()
 				.then(querySnapshot => {
@@ -62,7 +61,6 @@ export default {
 		deleteEmployee: (state, payload) => {
 			if (confirm("Are you sure?")) {
 				db
-					.collection("employees")
 					.where("employee_id", "==", payload)
 					.get()
 					.then(querySnapshot => {
