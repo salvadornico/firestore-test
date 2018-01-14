@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import db from "./firebaseInit"
-
 export default {
 	name: "edit-employee",
 	computed: {
