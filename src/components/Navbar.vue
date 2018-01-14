@@ -4,7 +4,7 @@ nav
 		.container
 			router-link.brand-logo.left(to="/") Employee Manager
 		ul.right
-			li(v-if="isLoggedIn") {{ currentUser.email }}
+			li(v-if="isLoggedIn") {{ currentUser.displayName }}
 			li(v-if="isLoggedIn")
 				button.btn(v-on:click="logout") Sign Out
 			li(v-if="!isLoggedIn")

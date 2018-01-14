@@ -5,6 +5,10 @@
 		form.col.s12(v-on:submit.prevent="createAccount")
 			.row
 				.input-field.col.s12
+					input(type="text" v-model="user.name" required)
+					label Name
+			.row
+				.input-field.col.s12
 					input(type="email" v-model="user.email" required)
 					label Email address
 			.row
@@ -21,6 +25,7 @@ export default {
 	data() {
 		return {
 			user: {
+				name: null,
 				email: null,
 				password: null
 			}

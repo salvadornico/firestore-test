@@ -16,13 +16,23 @@ export default {
 				.catch(error => {
 					Materialize.toast(`${error.code}: ${error.message}`, 2000)
 				})
+
+			auth.onAuthStateChanged(user => {
+				if (!user) {
+					return
+				}
+
+				user.updateProfile({
+					displayName: payload.name
+				})
+			})
 		},
 		checkForSignIn: state => {
 			auth.onAuthStateChanged(user => {
 				if (user) {
 					state.currentUser = user
 					state.isLoggedIn = true
-					Materialize.toast(`Hi ${user.email}!`, 2000)
+					Materialize.toast(`Hi ${user.displayName}!`, 2000)
 				} else {
 					state.isLoggedIn = false
 				}
