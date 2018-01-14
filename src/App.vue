@@ -12,9 +12,6 @@ export default {
 	name: "app",
 	components: {
 		Navbar
-	},
-	created() {
-		this.$store.dispatch("loadEmployees")
 	}
 }
 </script>

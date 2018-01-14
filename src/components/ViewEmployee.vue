@@ -25,18 +25,9 @@ export default {
 	},
 	methods: {
 		deleteEmployee() {
-			if (confirm("Are you sure?")) {
-				db
-					.collection("employees")
-					.where("employee_id", "==", this.$route.params.employee_id)
-					.get()
-					.then(querySnapshot => {
-						querySnapshot.forEach(doc => {
-							doc.ref.delete()
-							this.$router.push("/")
-						})
-					})
-			}
+			this.$store
+				.dispatch("deleteEmployee", this.$route.params.employee_id)
+				.then(this.$router.push("/"))
 		}
 	}
 }

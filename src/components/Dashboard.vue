@@ -20,6 +20,9 @@ export default {
 		employees() {
 			return this.$store.getters.employees
 		}
+	},
+	created() {
+		this.$store.dispatch("loadEmployees")
 	}
 }
 </script>

@@ -36,11 +36,32 @@ export default new Vuex.Store({
 					})
 					state.employees = result
 				})
+		},
+		deleteEmployee: (state, payload) => {
+			if (confirm("Are you sure?")) {
+				db
+					.collection("employees")
+					.where("employee_id", "==", payload)
+					.get()
+					.then(querySnapshot => {
+						querySnapshot.forEach(doc => {
+							doc.ref.delete()
+						})
+					})
+					.then(docRef => {
+						state.employees = state.employees.filter(
+							e => e.employee_id !== payload
+						)
+					})
+			}
 		}
 	},
 	actions: {
 		loadEmployees: async context => {
 			await context.commit("loadEmployees")
+		},
+		deleteEmployee: async (context, payload) => {
+			await context.commit("deleteEmployee", payload)
 		}
 	}
 })
