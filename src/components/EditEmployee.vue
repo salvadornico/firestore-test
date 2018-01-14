@@ -5,96 +5,46 @@
 		form.col.s12(v-on:submit.prevent="updateEmployee")
 			.row
 				.input-field.col.s12
-					input(type="text" v-model="employee_id" disabled)
+					input(type="text" v-model="employee.employee_id" disabled)
 					label Employee ID #
 			.row
 				.input-field.col.s12
-					input(type="text" v-model="name" required)
+					input(type="text" v-model="employee.name" required)
 					label Name
 			.row
 				.input-field.col.s12
-					input(type="text" v-model="department" required)
+					input(type="text" v-model="employee.department" required)
 					label Department
 				.input-field.col.s12
-					input(type="text" v-model="position" required)
+					input(type="text" v-model="employee.position" required)
 					label Position
 			button.btn(type="submit") Submit
-			router-link.btn.grey(to="/") Cancel
+			router-link.btn.grey(v-bind:to="{ name: 'view-employee', params: { employee_id: employee.employee_id }}") Cancel
 </template>
 
 <script>
-import db from "./firebaseInit";
+import db from "./firebaseInit"
 
 export default {
 	name: "edit-employee",
-	data() {
-		return {
-			employee_id: null,
-			name: null,
-			department: null,
-			position: null
-		};
+	computed: {
+		employee() {
+			return this.$store.getters.employee(this.$route.params.employee_id)
+		}
 	},
-	beforeRouteEnter(to, from, next) {
-		db
-			.collection("employees")
-			.where("employee_id", "==", to.params.employee_id)
-			.get()
-			.then(querySnapshot => {
-				querySnapshot.forEach(doc => {
-					next(vm => {
-						vm.employee_id = doc.data().employee_id;
-						vm.name = doc.data().name;
-						vm.department = doc.data().department;
-						vm.position = doc.data().position;
-					});
-				});
-			});
-	},
-	watch: {
-		$route: "fetchData"
+	mounted() {
+		Materialize.updateTextFields()
 	},
 	methods: {
-		fetchData() {
-			db
-				.collection("employees")
-				.where("employee_id", "==", this.$route.params.employee_id)
-				.get()
-				.then(querySnapshot => {
-					querySnapshot.forEach(doc => {
-						this.employee_id = doc.data().employee_id;
-						this.name = doc.data().name;
-						this.department = doc.data().department;
-						this.position = doc.data().position;
-					});
-				});
-
-			Materialize.updateTextFields();
-		},
 		updateEmployee() {
-			db
-				.collection("employees")
-				.where("employee_id", "==", this.$route.params.employee_id)
-				.get()
-				.then(querySnapshot => {
-					querySnapshot.forEach(doc => {
-						doc.ref
-							.update({
-								employee_id: this.employee_id,
-								name: this.name,
-								department: this.department,
-								position: this.position
-							})
-							.then(() => {
-								this.$router.push({
-									name: "view-employee",
-									params: { employee_id: this.employee_id }
-								});
-							});
-					});
-				});
+			this.$store.dispatch("editEmployee", this.employee).then(docRef => {
+				this.$router.push({
+					name: "view-employee",
+					params: { employee_id: this.employee.employee_id }
+				})
+			})
 		}
 	}
-};
+}
 </script>
 
